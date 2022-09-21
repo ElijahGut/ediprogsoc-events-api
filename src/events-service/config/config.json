@@ -1,0 +1,7 @@
+{
+    "localPort": "8080",
+    "firestoreEmulatorPort": "8081",
+    "apiVersion": "v1",
+    "gcloudProject": "prog-soc-map",
+    "firestoreMainCollection": "events"
+}

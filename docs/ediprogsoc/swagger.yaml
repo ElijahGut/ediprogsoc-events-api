@@ -1,0 +1,103 @@
+basePath: /api/v1/events-service
+definitions:
+  errors.PROGSOC_ERROR:
+    properties:
+      errorMapping:
+        type: string
+      msg:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  structs.Event:
+    properties:
+      description:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      photoUrl:
+        type: string
+      start:
+        type: string
+      summary:
+        type: string
+      tagColors:
+        items:
+          type: string
+        type: array
+      tagNames:
+        items:
+          type: string
+        type: array
+    type: object
+  structs.GetEventByIdResponse:
+    properties:
+      eventData:
+        $ref: '#/definitions/structs.Event'
+      message:
+        type: string
+    type: object
+  structs.PostEventResponse:
+    properties:
+      docId:
+        type: string
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: ediprogsoc@gmail.com
+    name: EUPS
+    url: https://ediprogsoc.co.uk/contact
+  description: Manages event resources for EUPS committee.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: EUPS Events API
+  version: "0.0"
+paths:
+  /event:
+    post:
+      consumes:
+      - application/json
+      description: Save event payload to firestore
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/structs.PostEventResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.PROGSOC_ERROR'
+      summary: Post an event
+      tags:
+      - events
+  /event/{docId}:
+    get:
+      consumes:
+      - application/json
+      description: Get event by its document ID
+      parameters:
+      - description: Event ID
+        in: path
+        name: docId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.GetEventByIdResponse'
+      summary: Get an event
+      tags:
+      - events
+swagger: "2.0"
