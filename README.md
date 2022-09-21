@@ -30,7 +30,7 @@ For local development, we interact with the firestore emulator instead of the li
 5. Enable firestore emulator for local dev: `firebase init emulators`. This command will start up a wizard that walks you through the emulator set-up. You only need the firestore emulator. Set the firestore emulator port to 8081, and the UI port to 4000. If you need more information explore the docs <a href="https://firebase.google.com/docs/emulator-suite/install_and_configure">here<a>. Once complete, the wizard should have generated a `firebase.json` file. You can consult this to double check/edit your config
 6. Start the emulator on one terminal session: `firebase emulators:start`. You can visit the UI at localhost:4000 and explore the firestore emulator
 7. Start the Go application on a second terminal session (remember to init env vars first, otherwise this won't work): `go run .`
-8. Test out the API using Postman or a similar tool. Requests should be made to `localhost:8080` You should be able to see your changes in the emulator UI
+8. Test out the API using Postman or a similar tool. Requests should be made to `localhost:8080`. You should be able to see your changes in the emulator UI
 9. If you need more info on the API, consult the Swagger docs at `localhost:8080/swagger`
 
 </br>
