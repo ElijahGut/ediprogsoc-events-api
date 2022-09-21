@@ -8,16 +8,12 @@ The API is built with Go Fiber and connects to Cloud Firestore.
 
 ## Prerequisites
 
-</br>
-
 * Go >= v.1.18
 * firebase CLI >= 11.9.0
 
 </br>
 
 ## Local set up
-
-</br>
 
 For local development, we interact with the firestore emulator instead of the live version.
 
@@ -37,14 +33,13 @@ For local development, we interact with the firestore emulator instead of the li
 
 ## Testing 
 
-</br>
-
 To test the application, make sure that the firestore emulator and Go application are running. Then, run `./run_tests.sh`. You may need to `chmod 777` if you get a permission error.
 
 If you get a google creds error, run `source .bashrc FIREBASE_PRIVATE_KEY` again.
 
 Testing is done with the testify package. Test results show which tests passed/failed, and includes coverage info.
 
+</br>
 
 ## Contact
 
