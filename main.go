@@ -31,12 +31,13 @@ func main() {
 
 	// init fiber app
 	app := api.InitApp()
-	eventsApi := api.InitApi(app)
+	eventsApi := api.InitRoutes(app)
 
 	// swagger ui endpoint
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	appEnv := os.Getenv("APP_ENV")
+
 	if appEnv == "dev" {
 		eventsApi.Listen(fmt.Sprintf(":%s", vp.GetString("localPort")))
 	}

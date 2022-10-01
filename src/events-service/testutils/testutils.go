@@ -3,13 +3,13 @@ package testutils
 import (
 	"bytes"
 	"ediprogsoc/events/src/events-service/errors"
-	"ediprogsoc/events/src/events-service/structs"
+	"ediprogsoc/events/src/events-service/types"
 	"encoding/json"
 	"log"
 	"net/http"
 )
 
-func EncodeEvent(e structs.Event) bytes.Buffer {
+func EncodeEvent(e types.Event) bytes.Buffer {
 	var buf bytes.Buffer
 	err := json.NewEncoder(&buf).Encode(e)
 	if err != nil {
@@ -18,7 +18,7 @@ func EncodeEvent(e structs.Event) bytes.Buffer {
 	return buf
 }
 
-func ParseJSON[T structs.PostEventResponse | structs.GetEventByIdResponse | errors.PROGSOC_ERROR](resp *http.Response, jsonData T) T {
+func ParseJSON[T types.PostEventResponse | types.GetEventByIdResponse | errors.PROGSOC_ERROR](resp *http.Response, jsonData T) T {
 	err := json.NewDecoder(resp.Body).Decode(&jsonData)
 
 	if err != nil {
