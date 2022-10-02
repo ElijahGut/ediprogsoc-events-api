@@ -4,18 +4,15 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/spf13/viper"
 )
 
-// init app with default config
-func InitApp() *fiber.App {
-	return fiber.New()
-}
+func (h *Handler) InitRoutes(app *fiber.App, eventServiceApiRef string, apiVersion string) *fiber.App {
+	api := app.Group("/api")
+	events := api.Group(fmt.Sprintf("/%s", eventServiceApiRef))
+	version := events.Group(fmt.Sprintf("/%s", apiVersion))
 
-func InitRoutes(app *fiber.App) *fiber.App {
-	app.Route(fmt.Sprintf("/api/%s/events-service", viper.GetViper().GetString("apiVersion")), func(api fiber.Router) {
-		api.Post("/event", PostHandler).Name("post-event")
-		api.Get("/event/:docId", GetByIdHandler).Name("get-event-by-id")
-	})
+	version.Post("/event", h.PostHandler).Name("post-event")
+	version.Get("/event/:docId", h.GetByIdHandler).Name("get-event-by-id")
+
 	return app
 }

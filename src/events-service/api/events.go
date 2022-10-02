@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"ediprogsoc/events/src/events-service/config"
 	"ediprogsoc/events/src/events-service/errors"
 	"ediprogsoc/events/src/events-service/types"
 	"fmt"
@@ -12,27 +11,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-var client *firestore.Client
-var events *firestore.CollectionRef
-
-func init() {
-	vp := config.LoadConfig()
-	client = CreateClient(vp.GetString("gcloudProject"))
-	events = client.Collection(vp.GetString("firestoreMainCollection"))
-
+type EventsService struct {
+	client *firestore.Client
+	events *firestore.CollectionRef
 }
 
-func CreateClient(projectID string) *firestore.Client {
-	client, err := firestore.NewClient(context.Background(), projectID)
-
-	if err != nil {
-		log.Fatalf("Error creating client: %v", err)
+func NewEventsService(e *firestore.CollectionRef) *EventsService {
+	return &EventsService{
+		events: e,
 	}
-
-	return client
 }
 
-func PostEvent(fiberCtx *fiber.Ctx, ctx context.Context) error {
+func (es *EventsService) PostEvent(fiberCtx *fiber.Ctx, ctx context.Context) error {
 	eventToPost := new(types.Event)
 	log.Printf("Posting event %s...", eventToPost.Name)
 
@@ -40,7 +30,7 @@ func PostEvent(fiberCtx *fiber.Ctx, ctx context.Context) error {
 		log.Fatalf("Error parsing event: %v", err)
 	}
 
-	doc, _, err := events.Add(ctx, eventToPost)
+	doc, _, err := es.events.Add(ctx, eventToPost)
 
 	if err != nil {
 		log.Printf("Error posting event [%s]", eventToPost.Name)
@@ -62,11 +52,11 @@ func PostEvent(fiberCtx *fiber.Ctx, ctx context.Context) error {
 	})
 }
 
-func GetEventById(fiberCtx *fiber.Ctx, ctx context.Context, docId string) error {
+func (es *EventsService) GetEventById(fiberCtx *fiber.Ctx, ctx context.Context, docId string) error {
 	var event types.Event
 	log.Printf("Getting event %s...", docId)
 
-	docsnap, err := events.Doc(docId).Get(ctx)
+	docsnap, err := es.events.Doc(docId).Get(ctx)
 
 	if err != nil {
 		log.Printf("Error getting event [%s]", docId)

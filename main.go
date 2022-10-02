@@ -1,15 +1,46 @@
 package main
 
 import (
+	"context"
 	"ediprogsoc/events/src/events-service/api"
 	"ediprogsoc/events/src/events-service/config"
 	"fmt"
+	"log"
 	"os"
 
 	_ "ediprogsoc/events/docs/ediprogsoc"
 
+	"cloud.google.com/go/firestore"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
 )
+
+func createClient(projectID string) *firestore.Client {
+	client, err := firestore.NewClient(context.Background(), projectID)
+
+	if err != nil {
+		log.Fatalf("Error creating client: %v", err)
+	}
+
+	return client
+}
+
+func initApp(appEnv string) *fiber.App {
+
+	app := fiber.New()
+
+	if appEnv == "dev" {
+		// generous cors config for swagger for local dev, otherwise return default config
+		app.Use(cors.New(cors.Config{
+			AllowOrigins: "*",
+			AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+			AllowMethods: "GET, HEAD, PUT, PATCH, POST, DELETE",
+		}))
+	}
+
+	return app
+}
 
 // @title           EUPS Events API
 // @version         0.0
@@ -29,16 +60,28 @@ func main() {
 	// init viper config
 	vp := config.LoadConfig()
 
+	// local dev env
+	appEnv := os.Getenv("APP_ENV")
+
 	// init fiber app
-	app := api.InitApp()
-	eventsApi := api.InitRoutes(app)
+	app := initApp(appEnv)
 
 	// swagger ui endpoint
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-	appEnv := os.Getenv("APP_ENV")
+	// init events service and handlers
+	client := createClient(vp.GetString("gcloudProject"))
+	eventsService := api.NewEventsService(client.Collection(vp.GetString("eventsCollection")))
+	handler := api.NewHandler(*eventsService)
+
+	// init api routes
+	handler.InitRoutes(app, vp.GetString("apiVersion"), vp.GetString("eventsServiceApiRef"))
 
 	if appEnv == "dev" {
-		eventsApi.Listen(fmt.Sprintf(":%s", vp.GetString("localPort")))
+		localPort := vp.GetString("localPort")
+		err := app.Listen(fmt.Sprintf(":%s", localPort))
+		if err != nil {
+			log.Fatalf("Error listening on port: %s: %v", localPort, err)
+		}
 	}
 }

@@ -38,11 +38,22 @@ const docTemplate = `{
                     "events"
                 ],
                 "summary": "Post an event",
+                "parameters": [
+                    {
+                        "description": "Event to post",
+                        "name": "eventToPost",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.Event"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/structs.PostEventResponse"
+                            "$ref": "#/definitions/types.PostEventResponse"
                         }
                     },
                     "400": {
@@ -80,7 +91,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/structs.GetEventByIdResponse"
+                            "$ref": "#/definitions/types.GetEventByIdResponse"
                         }
                     }
                 }
@@ -102,7 +113,7 @@ const docTemplate = `{
                 }
             }
         },
-        "structs.Event": {
+        "types.Event": {
             "type": "object",
             "properties": {
                 "description": {
@@ -137,18 +148,18 @@ const docTemplate = `{
                 }
             }
         },
-        "structs.GetEventByIdResponse": {
+        "types.GetEventByIdResponse": {
             "type": "object",
             "properties": {
                 "eventData": {
-                    "$ref": "#/definitions/structs.Event"
+                    "$ref": "#/definitions/types.Event"
                 },
                 "message": {
                     "type": "string"
                 }
             }
         },
-        "structs.PostEventResponse": {
+        "types.PostEventResponse": {
             "type": "object",
             "properties": {
                 "docId": {

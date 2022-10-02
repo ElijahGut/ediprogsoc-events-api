@@ -2,17 +2,28 @@ package api
 
 import "github.com/gofiber/fiber/v2"
 
+type Handler struct {
+	eventsService EventsService
+}
+
+func NewHandler(es EventsService) *Handler {
+	return &Handler{
+		eventsService: es,
+	}
+}
+
 // PostHandler godoc
 // @Summary      Post an event
 // @Description  Save event payload to firestore
 // @Tags         events
 // @Accept       json
 // @Produce      json
-// @Success      201  {object}  PostEventResponse
-// @Failure      400  {object}  PROGSOC_ERROR
+// @Param        eventToPost   body      types.Event  true  "Event to post"
+// @Success      201  {object}  types.PostEventResponse
+// @Failure      400  {object}  errors.PROGSOC_ERROR
 // @Router       /event [post]
-func PostHandler(c *fiber.Ctx) error {
-	return PostEvent(c, c.Context())
+func (h *Handler) PostHandler(c *fiber.Ctx) error {
+	return h.eventsService.PostEvent(c, c.Context())
 }
 
 // GetByIdHandler godoc
@@ -22,8 +33,8 @@ func PostHandler(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        docId   path      string  true  "Event ID"
-// @Success      200  {object}  GetEventByIdResponse
+// @Success      200  {object}  types.GetEventByIdResponse
 // @Router       /event/{docId} [get]
-func GetByIdHandler(c *fiber.Ctx) error {
-	return GetEventById(c, c.Context(), c.Params("docId"))
+func (h *Handler) GetByIdHandler(c *fiber.Ctx) error {
+	return h.eventsService.GetEventById(c, c.Context(), c.Params("docId"))
 }
