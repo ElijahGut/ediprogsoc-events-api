@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	cloud.google.com/go/firestore v1.6.1
-	github.com/gofiber/fiber/v2 v2.37.1
+	github.com/gofiber/fiber/v2 v2.38.1
 	github.com/gofiber/swagger v0.1.2
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.0

@@ -9,7 +9,7 @@ definitions:
       statusCode:
         type: integer
     type: object
-  structs.Event:
+  types.Event:
     properties:
       description:
         type: string
@@ -32,14 +32,14 @@ definitions:
           type: string
         type: array
     type: object
-  structs.GetEventByIdResponse:
+  types.GetEventByIdResponse:
     properties:
       eventData:
-        $ref: '#/definitions/structs.Event'
+        $ref: '#/definitions/types.Event'
       message:
         type: string
     type: object
-  structs.PostEventResponse:
+  types.PostEventResponse:
     properties:
       docId:
         type: string
@@ -65,13 +65,20 @@ paths:
       consumes:
       - application/json
       description: Save event payload to firestore
+      parameters:
+      - description: Event to post
+        in: body
+        name: eventToPost
+        required: true
+        schema:
+          $ref: '#/definitions/types.Event'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/structs.PostEventResponse'
+            $ref: '#/definitions/types.PostEventResponse'
         "400":
           description: Bad Request
           schema:
@@ -96,7 +103,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/structs.GetEventByIdResponse'
+            $ref: '#/definitions/types.GetEventByIdResponse'
       summary: Get an event
       tags:
       - events

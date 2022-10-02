@@ -1,3 +1,4 @@
 prog-soc-map-firebase-adminsdk-s59cm-325d49b18f.json
 *.log
 .DS_Store
+.idea/
